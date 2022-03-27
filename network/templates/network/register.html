@@ -1,0 +1,39 @@
+{% extends "network/layout.html" %}
+
+{% block body %}
+
+    <div class="container-xxl">
+        <h2 class="text-center my-3"><i>~ Register ~</i></h2>
+        <div class="row mb-b justify-content-center">
+
+            {% if message %}
+                <div class="text-center">{{ message }}</div>
+            {% endif %}
+
+            <div class="col-md-6 py-5">
+                <form action="{% url 'register' %}" method="post">
+                    {% csrf_token %}
+                    <div class="form-group mb-3">
+                        <input class="form-control" autofocus type="text" name="username" placeholder="Username">
+                    </div>
+                    <div class="form-group">
+                        <input class="form-control mb-3" type="email" name="email" placeholder="Email Address">
+                    </div>
+                    <div class="form-group">
+                        <input class="form-control mb-3" type="password" name="password" placeholder="Password">
+                    </div>
+                    <div class="form-group">
+                        <input class="form-control mb-3" type="password" name="confirmation" placeholder="Confirm Password">
+                    </div>
+                    <div class="text-center">
+                        <input class="btn btn-primary mb-4" type="submit" value="Register">
+                    </div>
+                </form>
+                <div class="text-center">
+                    Already have an account? <a href="{% url 'login' %}">Log In here.</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

@@ -1,0 +1,64 @@
+{% extends "network/layout.html" %}
+
+{% block body %}
+<div class="container">
+    <h2 class="text-center my-3"><i>~ New Post ~</i></h2>
+    <div class="row justify-content-center mb-2 mt-3">
+        <div class="col-sm-8 col-md-6">
+            <form method="post" action="{% url 'index' %}">
+                {% csrf_token %}
+                {% for field in form %}
+                    <div class="row mb-2">
+                        {{ field }}
+                    </div>
+                {% endfor %}
+                <div class="text-end">
+                    <button type="submit" class="btn btn-outline-secondary mb-3">Post</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row justify-content-center mb-2">
+            <div class="col-md-8">
+            {% for post in posts.object_list %}
+                <div class="container mb-3 pt-2 pb-2 post_div">
+                    <div>
+                        <h6><strong><a href="{% url 'profile' post.owner.username %}" class="text-dark">{{ post.owner }}</a></strong></h6>
+                    </div>
+                    <div>
+                        <p id="post-content{{ post.id }}">{{ post.description }}</p>
+                        <small class="text-muted"><i>{{ post.created_at }}</i></small>
+                        <div id="edit-view{{ post.id }}" style="display:none;">
+                            <textarea id="edit-text{{ post.id }}"></textarea>
+                            <button class="btn btn-danger btn-sm" id="cancel-button{{ post.id }}" type="button">Cancel</button>
+                            <button class="btn btn-success btn-sm" id="save-button{{ post.id }}">Save</button>
+                        </div>
+                    </div>  
+                    <div class="flex">
+                        {% if user.is_authenticated and request.user != post.owner %}
+                            {% if request.user not in post.liked.all %}
+                                <button class="flex-child" id="like-button{{ post.id }}" onclick="like_unlike('{{ post.id }}')" style="background-color:white;">{{ post.liked.all.count }}</button>
+                                <span class="ms-1">Likes</span>
+                                {% else %}
+                                <button class="flex-child" id="like-button{{ post.id }}" onclick="like_unlike('{{ post.id }}')" style="background-color:blue;color:white;">{{ post.liked.all.count }}</button>
+                                <span class="ms-1">Likes</span>
+                            {% endif %}
+                        {% endif %}
+                        {% if user.is_authenticated %}
+                            {% if request.user == post.owner %}
+                                <button class="btn btn-link btn-sm" id='edit-button{{ post.id }}' onclick="edit('{{ post.id }}')">Edit</button>
+                                <span class="flex-child">{{ post.liked.all.count }} Likes</span>                        
+                            {% endif %}
+                        {% endif %}
+                    </div>  
+                </div>
+            {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% include "network/pagination.html" %}
+    
+{% endblock %}
